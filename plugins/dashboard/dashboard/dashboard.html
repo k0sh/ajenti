@@ -1,0 +1,34 @@
+<%inherit file="/base.html"/>
+
+<%def name="plugin_panel()">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+        <tr>
+            <td>
+                <img src="/dl;plug/dashboard;server.png" onclick="javascript:ajax('/handle;42550188;click;');" class="ui-el-image">
+            </td>
+            <td>
+                <div style="width: 10px; height: 1px;"></div>
+            </td>
+            <td>
+                <table cellspacing="0" cellpadding="0">
+                <tbody><tr>
+                    <td>
+                        <div class="ui-el-label-5">${serverName}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="ui-el-label-1">${distroName}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="ui-el-label-1">${ajentiVersion}</div>
+                    </td>
+                </tr></tbody>
+                </table>
+            </td>
+        </tr>
+</tbody></table>
+</%def>
