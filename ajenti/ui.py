@@ -3,6 +3,7 @@ import util
 
 class UI:
 	root = None
+	update_timer = 0
 
 	def dump_base_page(self):
 		s = ''#<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
@@ -16,9 +17,11 @@ class UI:
 		s += "</body></html>"
 		return s
 
-
 	def dump_HTML(self):
-		return self.root.dump_HTML()
+		s = self.root.dump_HTML()
+		s += '<!-- update=' + str(self.update_timer) + ' -->'
+		self.update_timer = 0
+		return s
 
 
 class Element(object):
@@ -110,12 +113,12 @@ class SwitchContainer(Container):
 class ScrollContainer(Container):
 	width = 100
 	height = 100
-	
+
 	def dump_HTML(self):
 		return '<div class="ui-el-scrollcontainer" style="width:' + str(self.width) + \
 			'px; height:' + str(self.height) + 'px;">' + Container.dump_HTML(self) + '</div>'
 
-		
+
 class Button(Element):
 	text = ""
 
@@ -522,19 +525,19 @@ class DataTableRow(Element):
 
 class TreeContainer(VContainer):
 	pass
-	
-	
+
+
 class TreeContainerNode(VContainer):
 	text = ""
 	expanded = ""
 	_img = None
-	
+
 	def __init__(self, t=''):
 		VContainer.__init__(self)
 		self.text = t
 		self._img = Image('')
 		self._img.handler = self._on_clicked
-		
+
 	def dump_HTML(self):
 		self._img.file = 'core;ui/tree-minus.png' if self.expanded else 'core;ui/tree-plus.png'
 		s = '<div class="ui-el-treecontainernode"><div class="ui-el-treecontainernode-button"><a href="#">' + self._img.dump_HTML() + '</a></div>' + self.text
@@ -542,14 +545,34 @@ class TreeContainerNode(VContainer):
 			s += '<div class="ui-el-treecontainernode-inner">' + VContainer.dump_HTML(self) + '</div>'
 		s += '</div>'
 		return s
-		
+
 	def handle(self, target, event, data):
 		VContainer.handle(self, target, event, data)
 		self._img.handle(target, event, data)
-		
+
 	def _on_clicked(self, target, event, data):
 		print 'asd'
 		if event == 'click':
 			self.expanded = not self.expanded
 
 
+class TextArea(Element):
+	text = ""
+	width = "auto"
+	height = "auto"
+
+	def __init__(self, t=''):
+		Element.__init__(self)
+		self.text = t
+
+	def dump_HTML(self):
+		s = '<textarea class="ui-el-textarea" onblur="javascript:ajaxNoUpdate(\'/handle;' + self.id + \
+			';update;\'+escape(document.getElementById(\'' + self.id + '\').value));" id="' + \
+			self.id + '"';
+		if self.disabled: s += ' disabled '
+		s += 'style="width:' + str(self.width) + 'px; height:' + str(self.height) + 'px;">' + self.text + "</textarea>";
+		return s
+
+	def handler(self, t, e, d):
+		if e == 'update':
+			self.text = util.url_decode(d)

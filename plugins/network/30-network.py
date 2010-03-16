@@ -7,10 +7,7 @@ import tools
 
 class NetworkPluginMaster(PluginMaster):
 	name = 'Network'
-	platform = ['debian', 'ubuntu']
-
-	def _on_load(self):
-		PluginMaster._on_load(self)
+	platform = 'any' #['debian', 'ubuntu']
 
 	def make_instance(self):
 		i = NetworkPluginInstance(self)

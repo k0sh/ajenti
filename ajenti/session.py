@@ -87,8 +87,11 @@ class Session:
 		h.wfile.write(self.ui.dump_HTML())
 
 	def register_panel(self, p):
-		p.Visible = False
+		p.visible = False
 		self.core.switch.add_element(p)
+
+	def schedule_update(self, t):
+		self.ui.update_timer = t
 
 	def destroy(self):
 		log.info('Session', 'Destroying session for ' + self.client)
