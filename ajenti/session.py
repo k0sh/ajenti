@@ -4,6 +4,9 @@ import plugin
 import tools
 import util
 
+from mako.template import Template
+from mako.lookup import TemplateLookup
+
 list = {}
 
 def process_request(addr, req, h):
@@ -59,8 +62,11 @@ class Session:
 			self.process_download(s, h)
 		if s[0] == '/handle':
 			self.process_ajax(s, h)
+			html = self.selected.get_html()
+			h.wfile.write(html)
 		if s[0] == '/':
-			h.wfile.write(self.ui.dump_base_page())
+			html = self.selected.get_html()
+			h.wfile.write(html)
 
 	def process_download(self, s, h):
 		try:
@@ -78,17 +84,13 @@ class Session:
 			pass
 
 	def process_ajax(self, s, h):
+		log.info('AJAX', '%s %s %s' % (s[1], s[2], s[3]))
 		self.ui.root.handle(s[1], s[2], s[3])
 		for p in self.plugins:
 			p.update()
-		self.send_ui_update(h)
-
-	def send_ui_update(self, h):
-		h.wfile.write(self.ui.dump_HTML())
 
 	def register_panel(self, p):
 		p.visible = False
-		self.core.switch.add_element(p)
 
 	def schedule_update(self, t):
 		self.ui.update_timer = t

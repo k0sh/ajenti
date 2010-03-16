@@ -25,30 +25,18 @@ class CorePluginInstance(PluginInstance):
 
 		self._categories = []
 		self._panels = []
-		self.switch = ui.SwitchContainer()
 
 		log.info('CorePlugin', 'Started instance')
 
 	def _on_post_load(self):
 		mw = ui.MainWindow()
 
-		self._topbar = ui.TopBar()
-		mw.add_element(self._topbar)
-
-		l = ui.VContainer()
-		r = self.switch
-
 		for p in self.session.plugins:
 			if p.category_item != None:
-				l.add_element(p.category_item)
 				self._categories.append(p.category_item)
 				p.category_item.handler = self._on_category_clicked
-			if p.panel != None:
-				r.add_element(p.panel)
 			p.core = self
-
-		mw.add_element(l)
-		mw.add_element(r)
+		
 		self.session.ui.root = mw
 		self._on_category_clicked(self._categories[0], '', '')
 
@@ -56,7 +44,7 @@ class CorePluginInstance(PluginInstance):
 		for c in self._categories:
 			c.selected = False
 		t.selected = True
-		self.switch.switch(self.switch.elements[self._categories.index(t)])
+		self.session.selected = self.session.plugins[1]
 
 
 class ScriptAction(tools.Action):

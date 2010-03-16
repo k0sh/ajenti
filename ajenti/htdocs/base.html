@@ -8,5 +8,46 @@
 	<script src="/dl;core;ajax.js"></script>
 </head>
 <body id="main">
-    ${self.body()}
+	<table cellspacing="0" cellpadding="0" class="ui-el-mainwindow">
+        <tr>
+			<td class="ui-el-mainwindow-top" colspan="2">
+                <span class="ui-logo"><img src="/dl;core;ui/logo.png" /></span>
+            </td>
+        </tr>
+        <tr>
+			<td class="ui-el-mainwindow-left">
+                <table cellspacing="0" cellpadding="0">
+                % for p in plugins:
+                    % if p.category_item != None:
+                    <tr><td>
+
+	<a href="#" onclick="javascript:ajax('/handle;${p.category_item.id};click;');">
+    % if  p.category_item.selected:
+    <div class="ui-el-category-selected">
+    % else:
+    <div class="ui-el-category">
+    % endif
+    <table>
+        <tr>
+            <td rowspan="2" class="ui-el-category-icon">
+                <img src="/dl;${p.category_item.icon}.png" />
+            </td>
+            <td class="ui-el-category-text">${p.category_item.text}</td>
+        </tr>
+        <tr>
+            <td class="ui-el-category-description">${p.category_item.description}</td>
+        </tr>
+    </table>
+    </div>
+    </a>
+                    </td></tr>
+                    % endif
+                % endfor
+                </table>
+            </td>
+			<td class="ui-el-mainwindow-right">
+                ${self.plugin_panel()}
+            </td>
+		</tr>
+    </table>'
 </body></html>
